@@ -27,7 +27,7 @@ let commandLine =
         | _ ->
             let root = __SOURCE_DIRECTORY__
             //root + "/video/BBox.flh"
-            root + "/video/toaster.flh"
+            root + "/video/Toaster.flh"
     { Path = filename
       Fps = fps }
             
