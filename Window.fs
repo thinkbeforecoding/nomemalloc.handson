@@ -18,6 +18,7 @@ type Window<'t, 's
     let mutable state: 's = initialState
     let data = Array.zeroCreate<'t> (width * height)
     let targetElapsedTime = TimeSpan.FromSeconds(1./double fps)
+    let mutable stop = false
     
 
     override this.Initialize() =
@@ -42,7 +43,14 @@ type Window<'t, 's
         base.Update(gameTime)
 
     override this.Draw(gameTime: GameTime) =
-        state <- render state gameTime (data.AsMemory())
+        if not stop then
+
+            try
+                state <- render state (data.AsMemory())
+            with
+            | ex -> 
+                printfn "%O" ex
+                stop <- true
         texture.SetData(data,0, width*height)
 
         spriteBatch.Begin()

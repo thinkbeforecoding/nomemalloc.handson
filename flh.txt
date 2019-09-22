@@ -1,0 +1,131 @@
+Header:
+
+Offset  Length  Name         Description
+
+  0       4     size         The size of the entire animation file,
+                             including this file header.
+
+  4       2     magic        File format identifier. Always hex AF12.
+
+  6       2     frames       Number of frames in the flic.  This 
+                             count does not include the ring frame.  
+                             FLC files have a maximum length of 4000 
+                             frames.
+
+  8       2     width        Screen width in pixels.
+
+  10      2     height       Screen height in pixels.
+
+  12      2     depth        Bits per pixel (always 8).
+
+  14      2     flags        Set to hex 0003 after ring frame is 
+                             written and flic header is updated.  
+                             This indicates that the file was properly
+                             finished and closed.
+
+  16      4     speed        Number of milliseconds to delay between 
+                             each frame during playback.
+
+  20      2     reserved     Unused word, set to 0.
+
+  22      4     created      The MSDOS-formatted date and time of the
+                             file's creation.
+
+  26      4     creator      The serial number of the Animator Pro
+                             program used to create the file.  If the 
+                             file was created by some other program 
+                             using the FlicLib development kit, this 
+                             value is hex 464C4942 ("FLIB").
+
+  30      4     updated      The MSDOS-formatted date and time of the
+                             file's most recent update.
+
+  34      4     updater      Indicates who last updated the file.  See 
+                             the description of creator.
+
+  38      2     aspectx      The x-axis aspect ratio at which the file 
+                             was created.
+
+  40      2     aspecty      The y-axis aspect ratio at which the file 
+                             was created. Most often, the x:y aspect ratio 
+                             will be 1:1.  A 320x200 flic has a ratio of 
+                             6:5.
+
+  42      38    reserved     Unused space, set to zeroes.
+
+  80      4     oframe1      Offset from the beginning of the file to the 
+                             first animation frame chunk.
+
+  84      4     oframe2      Offset from the beginning of the file to
+                             the second animation frame chunk.  This value 
+                             is used when looping from the ring frame back 
+                             to the second frame during playback.
+
+  88      40    reserved     Unused space, set to zeroes.
+
+
+Frame Header:
+
+Offset  Length  Name         Description
+
+  0       4     size         The size of the frame chunk, including this
+                             header and all subordinate chunks that follow.
+
+  4       2     type         Frame chunk identifier. Always hex F1FA.
+
+  6       2     chunks       Number of subordinate chunks in the
+                             frame chunk.
+
+  8       8     reserved     Unused space, set to zeroes.
+
+All frames in the Example have only 1 chunk with followin header
+
+
+Offset  Length  Name         Description
+
+  0       4     size         The size of the chunk, including this header.
+
+  4       2     type         Data type identifier.
+
+  6    (size-6) data         The color or pixel data.
+
+
+Chunk Type:
+    25 Rle      Run Length Encoding
+    27 Delta    Delta Encoding
+
+Run Length Encoding Chunk:
+
+    All lines start with a 1 byte Paket count
+
+    Each paket Paket:
+        1 sbyte     Control size or count
+                    >= 0 => Fill. 
+                            The <Control> byte is followed 
+                            by a 2 bytes pixel value that 
+                            must be repeated <Contol> times
+                    < 0  => Copy
+                            The <Control> byte is followed
+                            by - <Control> 2 bytes pixels that
+                            must be copied
+
+Delta Encoding Chunk:
+
+    The chunk starts with a 2 bytes line count. 
+
+    Each Line starts with a header:
+        2 bytes opt     Skip lines (Only if < 0)
+        2 bytes         Paket count
+
+    Each Paket:
+        1 byte          Skip pixels
+        1 byte          Control size or count
+                        >= 0 => Copy
+                        <  0 => Fill
+
+
+
+
+    
+
+

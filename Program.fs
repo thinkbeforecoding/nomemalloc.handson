@@ -24,13 +24,15 @@ let Main args =
 
     let filename = Args.commandLine.Path
     
+
+    
     let width = 640
     let height = 480
     let state = ()
-    let render state _ _ = state
+    let render state _ = state
 
     use win = new Window<uint16,_>(int width, int height, SurfaceFormat.Bgr565, state, render, Args.commandLine.Fps)
-    //use listener = new EventListener()
+    // use listener = new EventListener()
     GC.Collect()
     win.Run()
     0
